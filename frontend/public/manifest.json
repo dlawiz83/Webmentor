@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "WebMentor",
+  "version": "1.0",
+  "description": "Turn any webpage into an interactive learning guide.",
+ 
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "WebMentor"
+  },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["assets/content.js"],
+      "css": ["content.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*", "content.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
