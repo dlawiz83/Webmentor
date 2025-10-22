@@ -7,7 +7,8 @@ WebMentor is a Chrome extension that transforms any webpage into an interactive 
 - Summarizer API  
 - Translator API  
 - Proofreader API  
-- Rewriter API  
+- Rewriter API
+- Prompt API 
 
 ##  Problem Solved
 WebMentor helps students, non-native readers, and researchers learn faster and understand online content easily — without leaving the page.
