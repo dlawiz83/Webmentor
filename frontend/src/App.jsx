@@ -1,6 +1,6 @@
-import ModeSelector from "./components/ModeSelector";
+import Popup from "./components/Popup";
 
 function App() {
-  return <ModeSelector />;
+  return <Popup />;
 }
 export default App;
