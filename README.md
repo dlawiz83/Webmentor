@@ -126,7 +126,7 @@ These tokens authorize your extension to access the experimental Chrome APIs loc
 ### 5. Build the extension
 
 ```bash
-#
+
 npm install
 npm run build
 
