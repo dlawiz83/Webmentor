@@ -32,7 +32,7 @@ Designed for **students, non-native readers, and lifelong learners**, it makes t
 - **Frontend:** React + Vite
 - **UI:** Tailwind CSS, Framer Motion, Lucide Icons
 - **Platform:** Chrome Extension (Manifest V3)
-- **APIs:** Chrome Built-in AI (Summarizer, Translator, Proofreader, Prompt API, Rewriter)
+- **APIs:** Chrome Built-in AI (Summarizer, Translator, Proofreader, Prompt API, Rewriter, Language Detector)
 
 ---
 
