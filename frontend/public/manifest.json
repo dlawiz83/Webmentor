@@ -5,8 +5,18 @@
   "description": "Turn any webpage into an interactive learning guide.",
   "action": {
     "default_popup": "popup.html",
-    "default_title": "WebMentor"
+    "default_title": "WebMentor",
+    "default_icon": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
   },
+  "icons": {
+  "16": "icon16.png",
+  "48": "icon48.png",
+  "128": "icon128.png"
+},
  "trial_tokens": [
  "$VITE_CHROME_AI_TOKEN",
  "$VITE_REWRITE_TOKEN"
