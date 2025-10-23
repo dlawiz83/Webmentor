@@ -7,7 +7,7 @@ Transform any webpage into your personal learning assistant — powered by **Chr
 ## 🚀 Overview
 
 **WebMentor** is a Chrome extension that turns any webpage into an interactive learning guide.  
-Whether you’re reading an article, research paper, or blog post — WebMentor helps you **summarize, simplify, translate, and proofread** content instantly, **without leaving the page**.
+Whether you’re reading an article, research paper, or blog post — WebMentor helps you **summarize, simplify, translate, rewrite, and proofread** content instantly, **without leaving the page**.
 
 Designed for **students, non-native readers, and lifelong learners**, it makes the web easier to understand and more accessible — all with **on-device AI**, ensuring speed, privacy, and offline use.
 
@@ -21,7 +21,7 @@ Designed for **students, non-native readers, and lifelong learners**, it makes t
 | 🧩 **Simplify (4 modes)**   | Rephrase complex text for **Kids**, **Students**, **Professionals**, or **Custom** tone. |
 | 🌍 **Translate**            | Translate content between multiple languages — instantly.                                |
 | ✍️ **Proofread**            | Fix grammar and improve clarity with one click.                                          |
-| 🔁 **Rewrite (optional)**   | Customize the tone or structure for clarity or creativity.                               |
+| 🔁 **Rewrite**              | Customize the tone or structure for clarity or creativity.                               |
 | 🔊 **Read Aloud**           | Let Chrome read the page to you — with pause, resume, and speed control.                 |
 | 💡 **Floating Action Menu** | Highlight any text and interact with AI right on the page.                               |
 
@@ -32,8 +32,8 @@ Designed for **students, non-native readers, and lifelong learners**, it makes t
 - **Frontend:** React + Vite
 - **UI:** Tailwind CSS, Framer Motion, Lucide Icons
 - **Platform:** Chrome Extension (Manifest V3)
-- **APIs:** Chrome Built-in AI (Summarizer, Translator, Proofreader, Prompt API — optional)
-- **Storage:** Chrome Local Storage
+- **APIs:** Chrome Built-in AI (Summarizer, Translator, Proofreader, Prompt API, Rewriter)
+  
 
 ---
 
@@ -43,7 +43,7 @@ Designed for **students, non-native readers, and lifelong learners**, it makes t
 2. **Highlight** any text on a webpage.
 3. **Open** the floating menu → choose an action (Summarize, Simplify, Translate, etc).
 4. **View results instantly** — processed by Chrome’s local AI models.
-5. **Use the popup interface** for advanced actions or read-aloud features.
+5. **Use the popup interface** for advanced actions.
 
 All processing happens **locally** for privacy and offline accessibility.
 
@@ -54,7 +54,7 @@ All processing happens **locally** for privacy and offline accessibility.
 ```bash
 # Clone the repository
 git clone https://github.com/dlawiz83/Webmentor.git
-cd webmentor
+cd frontend
 
 # Build the extension
 npm install
@@ -67,7 +67,7 @@ Then:
 1. Open `chrome://extensions/`
 2. Enable **Developer Mode**
 3. Click **Load unpacked** → select the `/dist` folder
-4. You’ll see the “💡 WebMentor” icon appear in your Chrome toolbar
+4. You’ll see the “ WebMentor” icon appear in your Chrome toolbar
 
 ---
 
@@ -104,7 +104,6 @@ By integrating directly into Chrome, it allows users to summarize, simplify, tra
 
 ## 🧠 Future Enhancements
 
-- Add support for **Prompt API** (creative rewriting, Q&A, etc)
 - Add **speech-to-text** accessibility (voice input)
 - Expand to **Firefox & Edge**
 - Support **on-page learning mode** (interactive explanations & quiz hints)
