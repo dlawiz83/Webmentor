@@ -4,6 +4,42 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { FloatingActionMenu } from "./components/FloatingActionMenu";
 import { MiniWindow } from "./components/MiniWindow";
+// Helper to send messages to the background safely
+function sendMessageToBackground(message) {
+  return new Promise((resolve, reject) => {
+    const runtime =
+      typeof chrome !== "undefined" && chrome.runtime
+        ? chrome.runtime
+        : typeof browser !== "undefined" && browser.runtime
+        ? browser.runtime
+        : null;
+
+    if (!runtime || !runtime.sendMessage) {
+      // Friendly error so UI can show it instead of throwing
+      reject(
+        new Error(
+          "Extension runtime not available (chrome.runtime undefined). " +
+            "Make sure this code runs as a content script (registered in manifest), not injected into the page."
+        )
+      );
+      return;
+    }
+
+    try {
+      runtime.sendMessage(message, (resp) => {
+        // check for chrome.runtime.lastError
+        if (typeof runtime.lastError !== "undefined" && runtime.lastError) {
+          reject(new Error(runtime.lastError.message));
+        } else {
+          resolve(resp);
+        }
+      });
+    } catch (err) {
+      reject(err);
+    }
+  });
+}
+
 const proofreaderToken = import.meta.env.VITE_CHROME_AI_TOKEN;
 const rewriterToken = import.meta.env.VITE_REWRITE_TOKEN;
 let root = null;
@@ -574,142 +610,42 @@ Please check:
       />
     );
   } else if (action === "simplify") {
+    const rootEl = ReactDOM.createRoot(mini);
+
     rootEl.render(
       <MiniWindow
-        text="Loading simplifier..."
+        text={text}
         action="simplify"
-        loading={true}
         onClose={() => {
           rootEl.unmount();
           mini.remove();
         }}
+        onRun={async (actionId, options) => {
+          try {
+            const response = await sendMessageToBackground({
+              type: "runLanguageModel",
+              text,
+              prompt:
+                options.simplifyMode === "kids"
+                  ? `Simplify the following text so that a 10-year-old can easily understand it. Use short, fun sentences and simple words:\n\n${text}`
+                  : options.simplifyMode === "students"
+                  ? `Simplify the following text for students. Keep the educational meaning clear but easier to read:\n\n${text}`
+                  : options.simplifyMode === "professionals"
+                  ? `Simplify the following text for professionals. Keep it concise, clear, and maintain a professional tone:\n\n${text}`
+                  : options.simplifyMode === "custom"
+                  ? `Simplify the following text based on this custom instruction: "${options.customPrompt}".\n\n${text}`
+                  : `Simplify the following text while keeping its meaning clear and accurate.
+Use easy-to-understand language suitable for a general audience:\n\n${text}`,
+            });
+
+            if (response.error) throw new Error(response.error);
+            return response.result;
+          } catch (err) {
+            console.error("Simplify error:", err);
+            throw err;
+          }
+        }}
       />
     );
-
-    (async () => {
-      try {
-        //  Wait until Gemini Nano (Prompt API) becomes available
-        let tries = 0;
-        while (!("LanguageModel" in self) && tries < 40) {
-          // show a subtle loading message while waiting
-          if (tries === 0) {
-            rootEl.render(
-              <MiniWindow
-                text="Preparing Gemini Nano model... Please wait a few seconds."
-                action="simplify"
-                loading={true}
-                onClose={() => {
-                  rootEl.unmount();
-                  mini.remove();
-                }}
-              />
-            );
-          }
-          await new Promise((r) => setTimeout(r, 500)); // retry every half-second
-          tries++;
-        }
-
-        if (!("LanguageModel" in self)) {
-          throw new Error(
-            "LanguageModel API still unavailable after waiting. Try refreshing the page or checking chrome://on-device-internals to confirm the model is 'available'."
-          );
-        }
-
-        console.log("Checking Prompt API availability...");
-        const availability = await LanguageModel.availability({
-          outputLanguage: "en",
-        });
-        console.log("LanguageModel availability:", availability);
-
-        if (availability === "unavailable") {
-          throw new Error(
-            "Gemini Nano not available on this device or browser version."
-          );
-        }
-
-        //  Create the LanguageModel session
-        let session;
-        if (availability === "downloadable") {
-          console.log("Downloading LanguageModel...");
-          session = await LanguageModel.create({
-            outputLanguage: "en",
-            monitor(m) {
-              m.addEventListener("downloadprogress", (e) => {
-                console.log(`Downloaded ${(e.loaded * 100).toFixed(1)}%`);
-              });
-            },
-          });
-        } else if (availability === "available") {
-          session = await LanguageModel.create({ outputLanguage: "en" });
-        } else {
-          throw new Error(`LanguageModel not ready: ${availability}`);
-        }
-
-        //  Start the simplification
-        rootEl.render(
-          <MiniWindow
-            text="Simplifying text..."
-            action="simplify"
-            loading={true}
-            onClose={() => {
-              rootEl.unmount();
-              mini.remove();
-            }}
-          />
-        );
-
-        const prompt = `Simplify the following text while keeping its meaning clear and accurate.
-Use easy-to-understand language suitable for a general audience:\n\n${text}`;
-
-        const simplifiedText = await session.prompt(prompt);
-
-        if (!simplifiedText) {
-          throw new Error("No simplified text returned from Gemini Nano.");
-        }
-
-        console.log("Simplified text result:", simplifiedText);
-
-        //  Display result + enable Re-run
-        rootEl.render(
-          <MiniWindow
-            text={simplifiedText}
-            action="simplify"
-            loading={false}
-            onClose={() => {
-              rootEl.unmount();
-              mini.remove();
-            }}
-            onRun={async () => {
-              //  Re-run logic for "Simplify" button
-              const reSession = await LanguageModel.create({
-                outputLanguage: "en",
-              });
-              const rePrompt = `Simplify this text again, but with slightly different phrasing to ensure clarity:\n\n${text}`;
-              const reResult = await reSession.prompt(rePrompt);
-              return reResult || "No new simplified result returned.";
-            }}
-          />
-        );
-      } catch (err) {
-        console.error("Simplify error:", err);
-        rootEl.render(
-          <MiniWindow
-            text={`Error: ${err.message}
-
-Please check:
-1. Chrome 138+ with built-in AI (Gemini Nano)
-2. Enable on-device AI models in chrome://flags/#optimization-guide-on-device-model
-3. Wait until LanguageModel.availability() becomes 'available'`}
-            action="simplify"
-            loading={false}
-            isError={true}
-            onClose={() => {
-              rootEl.unmount();
-              mini.remove();
-            }}
-          />
-        );
-      }
-    })();
   }
 }

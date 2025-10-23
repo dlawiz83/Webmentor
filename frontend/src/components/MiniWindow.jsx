@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { marked } from "marked";
 import {
   X,
   Copy,
@@ -14,6 +15,10 @@ import {
   Lightbulb,
   Languages,
   ArrowRight,
+  Volume2,
+  Pause,
+  Play,
+  Square,
 } from "lucide-react";
 
 export function MiniWindow({
@@ -25,6 +30,11 @@ export function MiniWindow({
   onRun = null,
 }) {
   // normalize action
+  marked.setOptions({
+    breaks: true,
+    gfm: true,
+  });
+
   const actionId = typeof action === "string" ? action : action?.id;
   console.log("MiniWindow received action:", action, "actionId:", actionId);
   const actionTitle =
@@ -102,6 +112,75 @@ export function MiniWindow({
   const [error, setError] = useState("");
   const [internalLoading, setInternalLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [audio, setAudio] = useState(null);
+  const [playing, setPlaying] = useState(false);
+  const [paused, setPaused] = useState(false);
+
+  const handleReadAloud = async () => {
+    if (!content?.trim()) return;
+
+    try {
+      setPlaying(true);
+      // Clean Markdown and HTML tags
+      const plainText = content
+        .replace(/\*\*/g, "") // remove bold markdown (**)
+        .replace(/\*/g, "") // remove italic markdown (*)
+        .replace(/#+\s?/g, "") // remove markdown headings
+        .replace(/<\/?[^>]+(>|$)/g, "") // remove any HTML tags (e.g., <p>)
+        .replace(/\[(.*?)\]\((.*?)\)/g, "$1") // remove markdown links [text](url)
+        .replace(/[`~>]/g, "") // remove other special markdown chars
+        .trim();
+
+      let detectedLang = "en";
+      try {
+        if ("LanguageDetector" in self) {
+          const detector = await LanguageDetector.create();
+          const result = await detector.detect(plainText);
+          if (result && result[0]?.detectedLanguage) {
+            detectedLang = result[0].detectedLanguage;
+          }
+        }
+      } catch (e) {
+        console.warn("Language detection failed, using English.");
+      }
+
+      const utterance = new SpeechSynthesisUtterance(content);
+      utterance.lang = detectedLang;
+      utterance.onend = () => setPlaying(false);
+      utterance.onerror = (e) => {
+        console.error("Speech synthesis error:", e);
+        setPlaying(false);
+      };
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+      setAudio(utterance);
+    } catch (err) {
+      console.error("Audio error:", err);
+      setPlaying(false);
+    }
+  };
+
+  const handlePause = () => {
+    if (speechSynthesis.speaking && !speechSynthesis.paused) {
+      speechSynthesis.pause();
+      setPaused(true);
+    }
+  };
+
+  const handleResume = () => {
+    if (speechSynthesis.paused) {
+      speechSynthesis.resume();
+      setPaused(false);
+    }
+  };
+
+  const handleStop = () => {
+    if (speechSynthesis.speaking || speechSynthesis.paused) {
+      speechSynthesis.cancel();
+      setPlaying(false);
+      setPaused(false);
+    }
+  };
 
   // translate states
   const [sourceLang, setSourceLang] = useState("en");
@@ -122,8 +201,16 @@ export function MiniWindow({
     setCustomPrompt("");
     setCopied(false);
 
-    if (actionId === "translate" || actionId === "simplify") {
+    if (actionId === "translate") {
       setStep("input");
+    } else if (actionId === "simplify") {
+      // If text looks like the final output (from background), show result directly
+      if (text && !text.toLowerCase().includes("loading simplifier")) {
+        setContent(text);
+        setStep("result");
+      } else {
+        setStep("input");
+      }
     } else {
       setStep("loading");
       runAction(actionId);
@@ -452,9 +539,12 @@ export function MiniWindow({
                       </span>
                     </div>
                     <div className="prose prose-sm max-w-none">
-                      <p className="text-gray-800 leading-relaxed whitespace-pre-line break-words">
-                        {content}
-                      </p>
+                      <div
+                        className="text-gray-800 leading-relaxed prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{
+                          __html: marked.parse(content || ""),
+                        }}
+                      />
                     </div>
                   </div>
                 </motion.div>
@@ -511,6 +601,38 @@ export function MiniWindow({
                     <Copy className="inline w-4 h-4 mr-2" />{" "}
                     {copied ? "Copied" : "Copy"}
                   </button>
+                  {!playing && (
+                    <button
+                      onClick={handleReadAloud}
+                      className="rounded-xl px-3 py-2 border border-gray-200 hover:shadow-md flex items-center gap-2 text-violet-600 hover:text-violet-800 font-medium transition"
+                    >
+                      <Volume2 className="w-4 h-4" /> Read Aloud
+                    </button>
+                  )}
+                  {playing && !paused && (
+                    <button
+                      onClick={handlePause}
+                      className="rounded-xl px-3 py-2 border border-gray-200 hover:shadow-md flex items-center gap-2 text-amber-600 hover:text-amber-800"
+                    >
+                      <Pause className="w-4 h-4" /> Pause
+                    </button>
+                  )}
+                  {paused && (
+                    <button
+                      onClick={handleResume}
+                      className="rounded-xl px-3 py-2 border border-gray-200 hover:shadow-md flex items-center gap-2 text-emerald-600 hover:text-emerald-800"
+                    >
+                      <Play className="w-4 h-4" /> Resume
+                    </button>
+                  )}
+                  {playing && (
+                    <button
+                      onClick={handleStop}
+                      className="rounded-xl px-3 py-2 border border-gray-200 hover:shadow-md flex items-center gap-2 text-rose-600 hover:text-rose-800"
+                    >
+                      <Square className="w-4 h-4" /> Stop
+                    </button>
+                  )}
                 </div>
               </motion.div>
             )}
