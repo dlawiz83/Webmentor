@@ -33,7 +33,6 @@ Designed for **students, non-native readers, and lifelong learners**, it makes t
 - **UI:** Tailwind CSS, Framer Motion, Lucide Icons
 - **Platform:** Chrome Extension (Manifest V3)
 - **APIs:** Chrome Built-in AI (Summarizer, Translator, Proofreader, Prompt API, Rewriter)
-  
 
 ---
 
@@ -49,14 +48,85 @@ All processing happens **locally** for privacy and offline accessibility.
 
 ---
 
-## 📦 Installation (Developer Mode)
+### ⚙️ Installation & Setup
+
+Before running WebMentor, make sure Chrome’s built-in AI environment is properly set up.  
+Follow these steps carefully to ensure everything works as intended.
+
+---
 
 ```bash
 # Clone the repository
 git clone https://github.com/dlawiz83/Webmentor.git
 cd frontend
 
-# Build the extension
+```
+
+### 🧩 1. Prerequisites
+
+- ✅ Use the **latest version of Google Chrome** or Dev build, Canary (up-to-date).
+- ✅ Go to `chrome://components` and confirm that **Optimization Guide On-Device Model** is installed and updated.
+  - If you don’t see it, click **“Check for update”** to install it.
+
+---
+
+### 🪄 2. Enable Required Chrome Flags
+
+Enable the following flags in your Chrome browser:
+
+- **Optimization Guide On-Device**  
+  Go to: `chrome://flags/#optimization-guide-on-device`  
+  → Set to **Enabled**  
+  → Click **Relaunch**
+
+- **Rewriter API for Gemini Nano**  
+  Go to: `chrome://flags/#rewriter-api-for-gemini-nano`  
+  → Set to **Enabled**  
+  → Click **Relaunch**
+
+- **Proofreader API for Gemini Nano**  
+  Go to: `chrome://flags/#proofreader-api-for-gemini-nano`  
+  → Set to **Enabled**  
+  → Click **Relaunch**
+
+---
+
+### ✏️ 3. Register for API Access (Origin Trials)
+
+Some APIs (like **Rewriter** and **Proofreader**) require registration in Chrome’s Origin Trials.
+
+1. Visit the **Rewriter API Origin Trial** page.
+
+   - Click **Register** and fill out the form.
+   - In the _Web Origin_ field, provide your extension ID in this format:
+     ```
+     chrome-extension://YOUR_EXTENSION_ID
+     ```
+   - Submit the form and copy the **token** you receive.
+
+2. Do the same for the **Proofreader API Origin Trial**.
+   - Register and use the same `chrome-extension://YOUR_EXTENSION_ID`.
+   - Copy the provided token.
+
+---
+
+### 🔑 4. Add Tokens to Environment File
+
+Create a `.env` file in the root of your project and add the following lines:
+
+```env
+VITE_REWRITE_TOKEN=your_rewriter_api_token_here
+VITE_CHROME_AI_TOKEN=your_proofreader_api_token_here
+
+```
+
+Save the file.
+These tokens authorize your extension to access the experimental Chrome APIs locally.
+
+### 5. Build the extension
+
+```bash
+#
 npm install
 npm run build
 
@@ -68,6 +138,14 @@ Then:
 2. Enable **Developer Mode**
 3. Click **Load unpacked** → select the `/dist` folder
 4. You’ll see the “ WebMentor” icon appear in your Chrome toolbar
+
+### 6. Model Download
+
+When you trigger one of WebMentor’s AI actions (e.g., Summarize, Proofread, or Simplify),
+Chrome will automatically begin downloading the required on-device model.
+
+You can view live download logs in the Console (Developer Tools).
+Once downloaded, all processing will run locally and offline.
 
 ---
 
