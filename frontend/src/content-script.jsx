@@ -147,7 +147,7 @@ function showMiniWindow(action, text) {
   if (action === "proofread") {
     setupOriginTrialToken("proofreader");
 
-    // Initial render — show loading MiniWindow immediately
+    // Initial render  show loading MiniWindow immediately
     rootEl.render(
       <MiniWindow
         text="Loading proofreader..."
@@ -520,7 +520,7 @@ Please check:
   } else if (action === "translate") {
     const rootEl = ReactDOM.createRoot(mini);
 
-    // Initial render — show input UI in MiniWindow
+    // Initial render  show input UI in MiniWindow
     rootEl.render(
       <MiniWindow
         text={text}

@@ -140,7 +140,7 @@ export default function Popup() {
     setPaused(false);
   };
 
-  // === AI ACTION HANDLER ===
+  // AI ACTION HANDLER
   const runAI = async (action) => {
     if (!input.trim()) return;
     console.log(`Running action: ${action.id}`);
