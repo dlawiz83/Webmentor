@@ -129,6 +129,12 @@ export function MiniWindow({
         .replace(/<\/?[^>]+(>|$)/g, "") // remove any HTML tags (e.g., <p>)
         .replace(/\[(.*?)\]\((.*?)\)/g, "$1") // remove markdown links [text](url)
         .replace(/[`~>]/g, "") // remove other special markdown chars
+        .replace(
+          /\b(Brain|Sparkles|Lightbulb|ArrowRight|Volume2|Play|Pause|Square)\b/gi,
+          ""
+        ) // remove icon words
+        .replace(/[🎧⭐✨💡🔊🎶🎵]/g, "") // remove emojis just in case
+        .replace(/\s{2,}/g, " ") // collapse double spaces
         .trim();
 
       let detectedLang = "en";
@@ -144,7 +150,7 @@ export function MiniWindow({
         console.warn("Language detection failed, using English.");
       }
 
-      const utterance = new SpeechSynthesisUtterance(content);
+      const utterance = new SpeechSynthesisUtterance(plainText);
       utterance.lang = detectedLang;
       utterance.onend = () => setPlaying(false);
       utterance.onerror = (e) => {

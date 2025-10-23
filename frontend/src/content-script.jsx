@@ -614,7 +614,7 @@ Please check:
 
     rootEl.render(
       <MiniWindow
-        text={text}
+        text=""
         action="simplify"
         onClose={() => {
           rootEl.unmount();
