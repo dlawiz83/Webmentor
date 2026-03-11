@@ -198,7 +198,7 @@ Empowering learning accessibility for the next billion users.
 ## 👩‍💻 Team
 
 **Ayesha Dawodi** — Developer & Designer  
-🚀 _Builder in Residence_ (The Residency)
+
 
 ---
 
