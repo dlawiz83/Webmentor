@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import { AnimatePresence } from "framer-motion";
-
+import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
   Wand2,
@@ -11,118 +9,155 @@ import {
   Sparkles,
 } from "lucide-react";
 
+const actions = [
+  { id: "summarize", icon: BookOpen, label: "Summarize" },
+  { id: "simplify", icon: Wand2, label: "Simplify" },
+  { id: "translate", icon: Globe, label: "Translate" },
+  { id: "proofread", icon: CheckCircle, label: "Proofread" },
+  { id: "rewrite", icon: PenLine, label: "Rewrite" },
+];
+
 export function FloatingActionMenu({ onActionClick }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const actions = [
-    {
-      id: "summarize",
-      icon: BookOpen,
-      label: "Summarize",
-      color: "text-blue-500",
-    },
-    {
-      id: "simplify",
-      icon: Wand2,
-      label: "Simplify",
-      color: "text-violet-500",
-    },
-    {
-      id: "translate",
-      icon: Globe,
-      label: "Translate",
-      color: "text-emerald-500",
-    },
-    {
-      id: "proofread",
-      icon: CheckCircle,
-      label: "Proofread",
-      color: "text-amber-500",
-    },
-    { id: "rewrite", icon: PenLine, label: "Rewrite", color: "text-pink-500" },
-  ];
-
-  const handleActionClick = (actionId) => {
-    onActionClick(actionId);
-    setIsExpanded(false);
-  };
+  const [hovered, setHovered] = useState(null);
 
   return (
-    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-      {/* Main Floating Button */}
-      <motion.button
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: "spring", duration: 0.5 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="relative bg-gradient-to-r from-blue-500 to-violet-500 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center group z-10"
+    <motion.div
+      initial={{ opacity: 0, y: 6, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 4, scale: 0.96 }}
+      transition={{ type: "spring", stiffness: 400, damping: 28 }}
+      style={{
+        fontFamily: "'DM Mono', 'Fira Code', monospace",
+        position: "relative",
+      }}
+    >
+      {/* Pill container */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "2px",
+          background: "#0f0f0f",
+          border: "1px solid rgba(255,255,255,0.10)",
+          borderRadius: "100px",
+          padding: "5px 8px",
+          boxShadow:
+            "0 8px 32px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)",
+        }}
       >
-        <motion.div
-          animate={{ rotate: isExpanded ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <Sparkles className="w-6 h-6" />
-        </motion.div>
-
-        {/* Pulsing Ring */}
-        <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.5, 0, 0.5],
+        {/* Brand spark */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 28,
+            height: 28,
+            borderRadius: "50%",
+            background: "linear-gradient(135deg, #f59e0b, #f97316)",
+            marginRight: 4,
+            flexShrink: 0,
           }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-violet-500"
+        >
+          <Sparkles style={{ width: 13, height: 13, color: "#000" }} />
+        </div>
+
+        {/* Divider */}
+        <div
+          style={{
+            width: 1,
+            height: 18,
+            background: "rgba(255,255,255,0.08)",
+            marginRight: 6,
+          }}
         />
-      </motion.button>
 
-      {/* Expanded Action Menu */}
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-20 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-3 border border-gray-100"
-          >
-            <div className="flex gap-2">
-              {actions.map((action, index) => (
-                <motion.button
-                  key={action.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  whileHover={{ y: -4, scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleActionClick(action.id)}
-                  className="group relative flex flex-col items-center gap-2 p-3 rounded-xl hover:bg-gray-50 transition-colors"
-                  title={action.label}
-                >
-                  <div
-                    className={`${action.color} p-2 rounded-lg bg-gray-50 group-hover:bg-white transition-colors`}
+        {/* Action buttons */}
+        {actions.map((action) => {
+          const Icon = action.icon;
+          const isHovered = hovered === action.id;
+          return (
+            <motion.button
+              key={action.id}
+              onHoverStart={() => setHovered(action.id)}
+              onHoverEnd={() => setHovered(null)}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => onActionClick(action.id)}
+              style={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                gap: 5,
+                padding: isHovered ? "5px 10px" : "5px 8px",
+                borderRadius: 100,
+                border: "none",
+                background: isHovered ? "rgba(245,158,11,0.12)" : "transparent",
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+                overflow: "visible",
+              }}
+              title={action.label}
+            >
+              <Icon
+                style={{
+                  width: 14,
+                  height: 14,
+                  color: isHovered ? "#f59e0b" : "rgba(255,255,255,0.55)",
+                  transition: "color 0.15s ease",
+                  flexShrink: 0,
+                }}
+              />
+              <AnimatePresence>
+                {isHovered && (
+                  <motion.span
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: "auto", opacity: 1 }}
+                    exit={{ width: 0, opacity: 0 }}
+                    transition={{ duration: 0.15, ease: "easeOut" }}
+                    style={{
+                      fontSize: 11,
+                      color: "#f59e0b",
+                      fontWeight: 500,
+                      whiteSpace: "nowrap",
+                      letterSpacing: "0.03em",
+                      overflow: "hidden",
+                      display: "block",
+                    }}
                   >
-                    <action.icon className="w-5 h-5" />
-                  </div>
-                  <span className="text-xs text-gray-600 whitespace-nowrap">
                     {action.label}
-                  </span>
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          );
+        })}
+      </div>
 
-                  {/* Tooltip on hover */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
-                    className="absolute -top-8 bg-gray-900 text-white text-xs py-1 px-2 rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    {action.label}
-                  </motion.div>
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      {/* Subtle pointer arrow pointing down to selected text */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: -6,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 10,
+          height: 6,
+          overflow: "hidden",
+        }}
+      >
+        <div
+          style={{
+            width: 10,
+            height: 10,
+            background: "#0f0f0f",
+            border: "1px solid rgba(255,255,255,0.10)",
+            transform: "rotate(45deg)",
+            transformOrigin: "center",
+            marginTop: -5,
+            marginLeft: 0,
+          }}
+        />
+      </div>
+    </motion.div>
   );
 }

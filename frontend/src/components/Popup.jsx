@@ -9,9 +9,15 @@ import {
   PenLine,
   Loader2,
   Volume2,
+  Square,
+  Pause,
+  Play,
+  ChevronRight,
+  AlertCircle,
 } from "lucide-react";
 
 const DEFAULT_OUTPUT_LANGUAGE = "en";
+
 const languages = [
   { code: "en", name: "English" },
   { code: "es", name: "Spanish" },
@@ -27,56 +33,204 @@ const languages = [
 ];
 
 const actions = [
-  {
-    id: "summarize",
-    title: "Summarize",
-    desc: "Get key points instantly",
-    icon: BookOpen,
-    gradient: "from-blue-400 to-cyan-400",
-  },
-  {
-    id: "simplify",
-    title: "Simplify",
-    desc: "Make it easier to understand",
-    icon: Wand2,
-    gradient: "from-violet-400 to-purple-400",
-  },
-  {
-    id: "translate",
-    title: "Translate",
-    desc: "Convert to another language",
-    icon: Globe,
-    gradient: "from-emerald-400 to-teal-400",
-  },
+  { id: "summarize", title: "Summarize", desc: "Key points", icon: BookOpen },
+  { id: "simplify", title: "Simplify", desc: "Plain language", icon: Wand2 },
+  { id: "translate", title: "Translate", desc: "Any language", icon: Globe },
   {
     id: "proofread",
     title: "Proofread",
-    desc: "Fix grammar & style",
+    desc: "Fix grammar",
     icon: CheckCircle,
-    gradient: "from-amber-400 to-orange-400",
   },
-  {
-    id: "rewrite",
-    title: "Rewrite",
-    desc: "Improve tone & clarity",
-    icon: PenLine,
-    gradient: "from-pink-400 to-rose-400",
-  },
+  { id: "rewrite", title: "Rewrite", desc: "Improve clarity", icon: PenLine },
 ];
+
+const S = {
+  wrap: {
+    width: 380,
+    background: "#0c0c0e",
+
+    overflow: "hidden",
+    border: "1px solid rgba(255,255,255,0.07)",
+    boxShadow: "0 24px 60px rgba(0,0,0,0.7)",
+    fontFamily: "'DM Sans', system-ui, sans-serif",
+    color: "#e8e6e1",
+  },
+  header: {
+    padding: "16px 18px",
+    borderBottom: "1px solid rgba(255,255,255,0.06)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    background: "rgba(255,255,255,0.02)",
+  },
+  brand: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+  },
+  brandIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    background: "linear-gradient(135deg, #f59e0b 0%, #f97316 100%)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  brandName: {
+    fontSize: 15,
+    fontWeight: 600,
+    color: "#fff",
+    letterSpacing: "-0.02em",
+  },
+  brandSub: {
+    fontSize: 11,
+    color: "rgba(255,255,255,0.35)",
+    letterSpacing: "0.06em",
+    textTransform: "uppercase",
+    marginTop: 1,
+  },
+  statusDot: {
+    width: 7,
+    height: 7,
+    borderRadius: "50%",
+    background: "#22c55e",
+    boxShadow: "0 0 6px rgba(34,197,94,0.6)",
+  },
+  textarea: {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "12px 14px",
+    background: "rgba(255,255,255,0.04)",
+    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: 12,
+    color: "#e8e6e1",
+    fontSize: 13,
+    lineHeight: 1.6,
+    resize: "none",
+    outline: "none",
+    fontFamily: "inherit",
+    transition: "border-color 0.2s",
+  },
+  actionGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 8,
+  },
+  actionBtn: (active) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "10px 12px",
+    borderRadius: 10,
+    border: `1px solid ${active ? "rgba(245,158,11,0.4)" : "rgba(255,255,255,0.07)"}`,
+    background: active ? "rgba(245,158,11,0.08)" : "rgba(255,255,255,0.03)",
+    cursor: "pointer",
+    transition: "all 0.15s",
+    textAlign: "left",
+    color: active ? "#f59e0b" : "#e8e6e1",
+  }),
+  actionLabel: {
+    fontSize: 13,
+    fontWeight: 500,
+  },
+  actionDesc: {
+    fontSize: 10.5,
+    opacity: 0.45,
+    marginTop: 1,
+  },
+  output: {
+    background: "rgba(255,255,255,0.03)",
+    border: "1px solid rgba(255,255,255,0.07)",
+    borderRadius: 12,
+    padding: "14px 16px",
+    fontSize: 13,
+    lineHeight: 1.7,
+    color: "#d4d0c8",
+    maxHeight: "50vh",
+    overflowY: "auto",
+    wordBreak: "break-word",
+  },
+  outputLabel: {
+    fontSize: 10,
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    color: "rgba(255,255,255,0.25)",
+    marginBottom: 10,
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+  },
+  audioBtn: (color) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    padding: "5px 10px",
+    borderRadius: 8,
+    border: "1px solid rgba(255,255,255,0.08)",
+    background: "transparent",
+    color,
+    fontSize: 12,
+    cursor: "pointer",
+    transition: "all 0.15s",
+    fontFamily: "inherit",
+  }),
+  select: {
+    width: "100%",
+    padding: "8px 10px",
+    background: "rgba(255,255,255,0.05)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: 8,
+    color: "#e8e6e1",
+    fontSize: 12,
+    outline: "none",
+    fontFamily: "inherit",
+    cursor: "pointer",
+  },
+  label: {
+    fontSize: 10.5,
+    color: "rgba(255,255,255,0.35)",
+    letterSpacing: "0.05em",
+    textTransform: "uppercase",
+    marginBottom: 5,
+    display: "block",
+  },
+  translateBtn: {
+    width: "100%",
+    padding: "10px",
+    background: "linear-gradient(135deg, #f59e0b, #f97316)",
+    border: "none",
+    borderRadius: 10,
+    color: "#000",
+    fontWeight: 600,
+    fontSize: 13,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    fontFamily: "inherit",
+    transition: "opacity 0.15s",
+  },
+};
+
+//Component
 
 export default function Popup() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState("");
   const [selectedAction, setSelectedAction] = useState(null);
-  const [history, setHistory] = useState({});
-  const [showTranslateInputs, setShowTranslateInputs] = useState(false);
+  const [showTranslate, setShowTranslate] = useState(false);
   const [sourceLang, setSourceLang] = useState("");
   const [targetLang, setTargetLang] = useState("");
   const [speaking, setSpeaking] = useState(false);
   const [paused, setPaused] = useState(false);
+  const [inputFocused, setInputFocused] = useState(false);
 
-  //READ ALOUD CONTROLS
+  // Audio
+
   const speakOutput = async () => {
     if (!output || speaking) return;
     setSpeaking(true);
@@ -88,27 +242,21 @@ export default function Popup() {
         const detection = await detector.detect(output);
         detectedLang = detection?.[0]?.detectedLanguage || "en";
       }
-    } catch (e) {
-      console.warn("Language detection failed:", e);
-    }
+    } catch {}
 
-    // Clean output text for speech
-    let cleanText = output
-      .replace(/\*\*/g, "") // remove bold markers
-      .replace(/\*/g, "") // remove italics markers
-      .replace(/`/g, "") // remove code markers
-      .replace(/#+\s*/g, "") // remove markdown headers
-      .replace(/[-•]\s*/g, "") // remove bullet symbols
-      .replace(/<\/?[^>]+(>|$)/g, "") // remove any HTML tags
-      .replace(/\s+/g, " ") // normalize spaces
+    const clean = output
+      .replace(/\*\*/g, "")
+      .replace(/\*/g, "")
+      .replace(/`/g, "")
+      .replace(/#+\s*/g, "")
+      .replace(/[-•]\s*/g, "")
+      .replace(/<\/?[^>]+(>|$)/g, "")
+      .replace(/\s+/g, " ")
       .trim();
 
-    cleanText = cleanText.replace(/^here'?s a simpler version[:\s]*/i, "");
-
-    const utterance = new SpeechSynthesisUtterance(cleanText);
+    const utterance = new SpeechSynthesisUtterance(clean);
     utterance.lang = detectedLang;
     utterance.rate = 1;
-    utterance.pitch = 1;
     utterance.onend = () => {
       setSpeaking(false);
       setPaused(false);
@@ -121,32 +269,26 @@ export default function Popup() {
   };
 
   const pauseSpeech = () => {
-    if (speechSynthesis.speaking && !speechSynthesis.paused) {
-      speechSynthesis.pause();
-      setPaused(true);
-    }
+    speechSynthesis.pause();
+    setPaused(true);
   };
-
   const resumeSpeech = () => {
-    if (speechSynthesis.paused) {
-      speechSynthesis.resume();
-      setPaused(false);
-    }
+    speechSynthesis.resume();
+    setPaused(false);
   };
-
   const stopSpeech = () => {
     speechSynthesis.cancel();
     setSpeaking(false);
     setPaused(false);
   };
 
-  // AI ACTION HANDLER
+  //AI runner
+
   const runAI = async (action) => {
     if (!input.trim()) return;
-    console.log(`Running action: ${action.id}`);
     setLoading(true);
     setSelectedAction(action);
-    setOutput("Processing...");
+    setOutput("");
 
     try {
       let result = "";
@@ -155,36 +297,27 @@ export default function Popup() {
         case "summarize": {
           if (!("Summarizer" in self))
             throw new Error("Summarizer API not available (Chrome 138+).");
-          const sumAvail = await Summarizer.availability();
-          let summarizer;
-          if (sumAvail === "downloadable") {
-            setOutput("Downloading Summarizer model...");
-            summarizer = await Summarizer.create({
-              type: "key-points",
-              format: "plain-text",
-              outputLanguage: DEFAULT_OUTPUT_LANGUAGE,
+          const avail = await Summarizer.availability();
+          const summarizer = await Summarizer.create({
+            type: "key-points",
+            format: "plain-text",
+            outputLanguage: DEFAULT_OUTPUT_LANGUAGE,
+            ...(avail === "downloadable" && {
               monitor(m) {
-                m.addEventListener("downloadprogress", (e) => {
-                  const percent = Math.round(e.loaded * 100);
-                  setOutput(`Downloading Summarizer model... ${percent}%`);
-                });
+                m.addEventListener("downloadprogress", (e) =>
+                  setOutput(
+                    `Downloading model… ${Math.round(e.loaded * 100)}%`,
+                  ),
+                );
               },
-            });
-          } else if (sumAvail === "available") {
-            summarizer = await Summarizer.create({
-              type: "key-points",
-              format: "plain-text",
-              outputLanguage: DEFAULT_OUTPUT_LANGUAGE,
-            });
-          } else throw new Error(`Summarizer not ready: ${sumAvail}`);
-
-          setOutput("Summarizing...");
-          const sumRes = await summarizer.summarize(input, {
-            context: "Summarizing selected text for clarity.",
+            }),
           });
-          result = sumRes
+          result = (
+            await summarizer.summarize(input, {
+              context: "Summarize selected text.",
+            })
+          )
             .replace(/^\s*\*+\s*/gm, "• ")
-            .replace(/^\s*-\s*/gm, "• ")
             .replace(/\*\*(.*?)\*\*/g, "$1")
             .replace(/\*(.*?)\*/g, "$1")
             .trim();
@@ -193,119 +326,80 @@ export default function Popup() {
 
         case "simplify": {
           if (!("LanguageModel" in self))
-            throw new Error("Gemini Nano (Prompt API) unavailable");
-
-          const availability = await LanguageModel.availability({
+            throw new Error("Prompt API unavailable.");
+          const avail = await LanguageModel.availability({
             outputLanguage: "en",
           });
-
-          let session;
-          if (
-            availability === "downloadable" ||
-            availability === "downloading"
-          ) {
-            session = await LanguageModel.create({
-              outputLanguage: "en",
+          const session = await LanguageModel.create({
+            outputLanguage: "en",
+            ...(avail === "downloadable" && {
               monitor(m) {
-                m.addEventListener("downloadprogress", (e) => {
-                  const percent = Math.round(e.loaded * 100);
-                  setOutput(`Downloading Gemini Nano model... ${percent}%`);
-                });
+                m.addEventListener("downloadprogress", (e) =>
+                  setOutput(
+                    `Downloading model… ${Math.round(e.loaded * 100)}%`,
+                  ),
+                );
               },
-            });
-          } else if (availability === "available") {
-            session = await LanguageModel.create({ outputLanguage: "en" });
-          } else throw new Error(`LanguageModel not ready: ${availability}`);
-
-          const response = await session.prompt(
-            `Simplify the following text while keeping its meaning clear:\n\n${input}`
+            }),
+          });
+          result = await session.prompt(
+            `Simplify this text so it's easy to understand:\n\n${input}`,
           );
-          result = response;
           break;
         }
 
         case "translate": {
-          if (!showTranslateInputs) {
-            setShowTranslateInputs(true);
+          if (!showTranslate) {
+            setShowTranslate(true);
             setLoading(false);
-            setOutput("");
             return;
           }
+          if (!targetLang.trim()) throw new Error("Select a target language.");
           if (!("Translator" in self))
-            throw new Error("Translator API not supported (Chrome 138+).");
-          if (!targetLang.trim())
-            throw new Error("Please select a target language.");
+            throw new Error("Translator API not available (Chrome 138+).");
 
           let detected;
-          if ("LanguageDetector" in self) {
-            const detector = await LanguageDetector.create();
-            try {
-              const detection = await detector.detect(input);
-              detected = detection?.[0]?.detectedLanguage;
-            } catch (e) {
-              console.warn("LanguageDetector failed:", e);
+          try {
+            if ("LanguageDetector" in self) {
+              const d = await LanguageDetector.create();
+              detected = (await d.detect(input))?.[0]?.detectedLanguage;
             }
-          }
+          } catch {}
 
-          const fromLang = sourceLang || detected || "auto";
-          setOutput(`Translating ${fromLang} → ${targetLang}...`);
-
-          const translatorAvail = await Translator.availability({
-            sourceLanguage: fromLang === "auto" ? undefined : fromLang,
+          const fromLang = sourceLang || detected || "en";
+          const translator = await Translator.create({
+            sourceLanguage: fromLang === "auto" ? "en" : fromLang,
             targetLanguage: targetLang,
-          }).catch(() => "available");
-
-          let translator;
-          if (translatorAvail === "downloadable") {
-            setOutput("Downloading Translator model...");
-            translator = await Translator.create({
-              sourceLanguage: fromLang === "auto" ? "en" : fromLang,
-              targetLanguage: targetLang,
-              monitor(m) {
-                m.addEventListener("downloadprogress", (e) => {
-                  const percent = Math.round(e.loaded * 100);
-                  setOutput(`Downloading Translator model... ${percent}%`);
-                });
-              },
-            });
-          } else {
-            translator = await Translator.create({
-              sourceLanguage: fromLang === "auto" ? "en" : fromLang,
-              targetLanguage: targetLang,
-            });
-          }
-
-          const translated = await translator.translate(input);
-          result = translated;
-          setShowTranslateInputs(false);
+          });
+          result = await translator.translate(input);
+          setShowTranslate(false);
           break;
         }
 
         case "proofread": {
           if (!("Proofreader" in self))
-            throw new Error("Proofreader API not available (Chrome 127+).");
+            throw new Error("Proofreader API not available.");
           const proof = await Proofreader.create({
             format: "plain-text",
             outputLanguage: DEFAULT_OUTPUT_LANGUAGE,
           });
-          const proofRes = await proof.proofread(input);
-          result = proofRes?.revisedText || proofRes?.correctedInput || "";
+          const res = await proof.proofread(input);
+          result = res?.revisedText || res?.correctedInput || "";
           break;
         }
 
         case "rewrite": {
           if (!("Rewriter" in self))
-            throw new Error("Rewriter API not available (Chrome 127+).");
-          const rewriter = await Rewriter.create({
+            throw new Error("Rewriter API not available.");
+          const rw = await Rewriter.create({
             tone: "more-casual",
             format: "plain-text",
             outputLanguage: DEFAULT_OUTPUT_LANGUAGE,
           });
-          const rwRes = await rewriter.rewrite(input, {
-            context:
-              "Enhance clarity and flow, keeping the same meaning in a friendly tone.",
-          });
-          result = rwRes || "";
+          result =
+            (await rw.rewrite(input, {
+              context: "Enhance clarity, keep meaning.",
+            })) || "";
           break;
         }
 
@@ -314,201 +408,305 @@ export default function Popup() {
       }
 
       setOutput(result);
-      setHistory((prev) => {
-        const arr = prev[action.id] ? [result, ...prev[action.id]] : [result];
-        return { ...prev, [action.id]: arr.slice(0, 3) };
-      });
     } catch (err) {
-      console.error("AI Error:", err);
-      setOutput(
-        err?.message ? `Error: ${err.message}` : `Error: ${String(err)}`
-      );
+      setOutput(`⚠ ${err?.message || String(err)}`);
     } finally {
       setLoading(false);
     }
   };
 
+  //  Render
+
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="w-[380px] bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100"
+      initial={{ opacity: 0, scale: 0.97, y: 8 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      style={S.wrap}
     >
-      {/* HEADER */}
-      <div className="bg-gradient-to-r from-blue-500 via-violet-500 to-purple-500 p-5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <motion.div
-            animate={{
-              boxShadow: [
-                "0 0 0 0 rgba(139,92,246,0.5)",
-                "0 0 0 8px rgba(139,92,246,0)",
-              ],
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="bg-white/20 p-2.5 rounded-2xl"
-          >
-            <Sparkles className="w-6 h-6 text-white" />
-          </motion.div>
+      {/* Header */}
+      <div style={S.header}>
+        <div style={S.brand}>
+          <div style={S.brandIcon}>
+            <Sparkles style={{ width: 16, height: 16, color: "#000" }} />
+          </div>
           <div>
-            <h1 className="text-white font-medium text-lg">WebMentor</h1>
-            <p className="text-white/80 text-sm">Offline AI Assistant</p>
+            <div style={S.brandName}>WebMentor</div>
+            <div style={S.brandSub}>On-device AI</div>
           </div>
         </div>
+        <div style={S.statusDot} title="AI ready" />
       </div>
 
-      {/* INPUT */}
-      <div className="p-5">
+      {/* Input */}
+      <div style={{ padding: "14px 16px 0" }}>
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Paste or type text to analyze..."
-          className="w-full h-28 p-3 border border-gray-200 rounded-2xl resize-none focus:outline-none focus:ring-2 focus:ring-violet-400"
+          onFocus={() => setInputFocused(true)}
+          onBlur={() => setInputFocused(false)}
+          placeholder="Paste or type text to analyse…"
+          rows={4}
+          style={{
+            ...S.textarea,
+            borderColor: inputFocused
+              ? "rgba(245,158,11,0.4)"
+              : "rgba(255,255,255,0.08)",
+            boxShadow: inputFocused
+              ? "0 0 0 3px rgba(245,158,11,0.08)"
+              : "none",
+          }}
         />
+        {/* char hint */}
+        {input.length > 0 && (
+          <div
+            style={{
+              textAlign: "right",
+              fontSize: 10.5,
+              color: "rgba(255,255,255,0.2)",
+              marginTop: 4,
+            }}
+          >
+            {input.length} chars
+          </div>
+        )}
       </div>
 
-      {/* TRANSLATE INPUTS */}
-      {showTranslateInputs && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="px-5 pb-3"
-        >
-          <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 flex flex-col gap-3">
-            <div className="flex flex-col gap-2">
-              <label className="text-xs text-gray-600">
-                Source Language (optional)
-              </label>
-              <select
-                value={sourceLang}
-                onChange={(e) => setSourceLang(e.target.value)}
-                className="p-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-violet-400"
-              >
-                <option value="">Auto Detect</option>
-                {languages.map((l) => (
-                  <option key={l.code} value={l.code}>
-                    {l.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-col gap-2">
-              <label className="text-xs text-gray-600">Target Language</label>
-              <select
-                value={targetLang}
-                onChange={(e) => setTargetLang(e.target.value)}
-                className="p-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-violet-400"
-              >
-                <option value="">Select language</option>
-                {languages.map((l) => (
-                  <option key={l.code} value={l.code}>
-                    {l.name}
-                  </option>
-                ))}
-              </select>
+      {/* Translate extra inputs */}
+      <AnimatePresence>
+        {showTranslate && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            style={{ overflow: "hidden", padding: "10px 16px 0" }}
+          >
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 8,
+              }}
+            >
+              <div>
+                <label style={S.label}>From</label>
+                <select
+                  value={sourceLang}
+                  onChange={(e) => setSourceLang(e.target.value)}
+                  style={S.select}
+                >
+                  <option value="">Auto-detect</option>
+                  {languages.map((l) => (
+                    <option key={l.code} value={l.code}>
+                      {l.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={S.label}>To</label>
+                <select
+                  value={targetLang}
+                  onChange={(e) => setTargetLang(e.target.value)}
+                  style={S.select}
+                >
+                  <option value="">Select…</option>
+                  {languages.map((l) => (
+                    <option key={l.code} value={l.code}>
+                      {l.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             <button
               onClick={() => runAI(actions.find((a) => a.id === "translate"))}
-              className="mt-2 bg-gradient-to-r from-emerald-400 to-teal-400 text-white text-sm font-medium py-2 rounded-xl shadow-md hover:opacity-90"
+              style={{ ...S.translateBtn, marginTop: 10 }}
             >
-              Translate Now
+              <Globe style={{ width: 14, height: 14 }} />
+              Translate now
+              <ChevronRight style={{ width: 14, height: 14 }} />
             </button>
-          </div>
-        </motion.div>
-      )}
-
-      {/* ACTION BUTTONS */}
-      <div className="px-5 pb-5 grid grid-cols-2 gap-3">
-        {actions.map((a) => (
-          <motion.button
-            key={a.id}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => runAI(a)}
-            disabled={loading}
-            className={`flex items-center gap-2 p-3 rounded-xl text-white bg-gradient-to-r ${
-              a.gradient
-            } shadow-md ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
-          >
-            <a.icon className="w-4 h-4" />
-            <span className="text-sm font-medium">{a.title}</span>
-          </motion.button>
-        ))}
-      </div>
-
-      {/* OUTPUT */}
-      <AnimatePresence>
-        {(output || loading) && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="px-5 pb-5"
-          >
-            <div className="bg-gray-50 rounded-2xl p-5 border border-gray-200 max-h-[70vh] overflow-y-auto text-sm text-gray-800 whitespace-normal break-words">
-              {loading ? (
-                <div className="flex items-center justify-center w-full">
-                  <Loader2 className="w-6 h-6 text-violet-500 animate-spin" />
-                </div>
-              ) : (
-                <>
-                  <div
-                    className="prose prose-sm text-gray-800 w-full leading-relaxed space-y-3"
-                    dangerouslySetInnerHTML={{
-                      __html: output
-                        .replace(/\n{2,}/g, "</p><p>")
-                        .replace(/\n/g, "<br/>")
-                        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                        .replace(/\*(.*?)\*/g, "<em>$1</em>")
-                        .replace(/^>\s*(.*)$/gm, "<blockquote>$1</blockquote>")
-                        .replace(/^\s*[-•]\s*(.*)$/gm, "<li>$1</li>")
-                        .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>")
-                        .replace(/^(?!<p>)([\s\S]+)$/, "<p>$1</p>"),
-                    }}
-                  />
-                  {/* Read Aloud Button */}
-                  <div className="mt-4 flex items-center gap-3 text-sm">
-                    {!speaking && (
-                      <button
-                        onClick={speakOutput}
-                        className="flex items-center gap-2 text-violet-600 hover:text-violet-800 font-medium transition"
-                      >
-                        <Volume2 className="w-4 h-4" />
-                        Read Aloud
-                      </button>
-                    )}
-
-                    {speaking && !paused && (
-                      <button
-                        onClick={pauseSpeech}
-                        className="flex items-center gap-2 text-amber-600 hover:text-amber-800 font-medium transition"
-                      >
-                        ⏸ Pause
-                      </button>
-                    )}
-
-                    {paused && (
-                      <button
-                        onClick={resumeSpeech}
-                        className="flex items-center gap-2 text-emerald-600 hover:text-emerald-800 font-medium transition"
-                      >
-                        ▶ Resume
-                      </button>
-                    )}
-
-                    {speaking && (
-                      <button
-                        onClick={stopSpeech}
-                        className="flex items-center gap-2 text-rose-600 hover:text-rose-800 font-medium transition"
-                      >
-                        ⏹ Stop
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Action grid */}
+      <div style={{ padding: "12px 16px" }}>
+        <div style={S.actionGrid}>
+          {actions.map((a, i) => {
+            const Icon = a.icon;
+            const isActive = selectedAction?.id === a.id;
+            return (
+              <motion.button
+                key={a.id}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => runAI(a)}
+                disabled={loading}
+                style={{
+                  ...S.actionBtn(isActive),
+                  opacity: loading && !isActive ? 0.5 : 1,
+                  gridColumn: i === 4 ? "span 2" : undefined,
+                }}
+              >
+                <Icon
+                  style={{
+                    width: 14,
+                    height: 14,
+                    flexShrink: 0,
+                    opacity: isActive ? 1 : 0.6,
+                  }}
+                />
+                <div>
+                  <div style={S.actionLabel}>{a.title}</div>
+                  <div style={S.actionDesc}>{a.desc}</div>
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Divider */}
+      {(output || loading) && (
+        <div
+          style={{
+            height: 1,
+            background: "rgba(255,255,255,0.06)",
+            margin: "0 16px",
+          }}
+        />
+      )}
+
+      {/* Output */}
+      <AnimatePresence>
+        {(output || loading) && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            style={{ padding: "14px 16px 16px" }}
+          >
+            {loading ? (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "20px 0",
+                  gap: 10,
+                  color: "rgba(255,255,255,0.3)",
+                  fontSize: 13,
+                }}
+              >
+                <Loader2
+                  style={{
+                    width: 16,
+                    height: 16,
+                    animation: "spin 1s linear infinite",
+                    color: "#f59e0b",
+                  }}
+                />
+                Processing…
+              </div>
+            ) : (
+              <>
+                <div style={S.outputLabel}>
+                  <Sparkles style={{ width: 10, height: 10 }} />
+                  {selectedAction?.title || "Result"}
+                </div>
+                <div
+                  style={S.output}
+                  dangerouslySetInnerHTML={{
+                    __html: output
+                      .replace(/\n{2,}/g, "</p><p>")
+                      .replace(/\n/g, "<br/>")
+                      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+                      .replace(/^\s*[-•]\s*(.*)$/gm, "<li>$1</li>")
+                      .replace(/(<li>.*<\/li>)/gs, "<ul>$1</ul>")
+                      .replace(/^(?!<[pul])([\s\S]+)$/, "<p>$1</p>"),
+                  }}
+                />
+
+                {/* Audio controls */}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 6,
+                    marginTop: 10,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {!speaking && (
+                    <button
+                      onClick={speakOutput}
+                      style={S.audioBtn("rgba(255,255,255,0.45)")}
+                    >
+                      <Volume2 style={{ width: 12, height: 12 }} /> Read aloud
+                    </button>
+                  )}
+                  {speaking && !paused && (
+                    <button onClick={pauseSpeech} style={S.audioBtn("#f59e0b")}>
+                      <Pause style={{ width: 12, height: 12 }} /> Pause
+                    </button>
+                  )}
+                  {paused && (
+                    <button
+                      onClick={resumeSpeech}
+                      style={S.audioBtn("#22c55e")}
+                    >
+                      <Play style={{ width: 12, height: 12 }} /> Resume
+                    </button>
+                  )}
+                  {speaking && (
+                    <button
+                      onClick={stopSpeech}
+                      style={S.audioBtn("rgba(239,68,68,0.7)")}
+                    >
+                      <Square style={{ width: 12, height: 12 }} /> Stop
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Footer */}
+      <div
+        style={{
+          padding: "8px 16px",
+          borderTop: "1px solid rgba(255,255,255,0.04)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <span
+          style={{
+            fontSize: 10,
+            color: "rgba(255,255,255,0.18)",
+            letterSpacing: "0.05em",
+          }}
+        >
+          Powered by Gemini Nano · on-device
+        </span>
+        <span
+          style={{
+            fontSize: 10,
+            padding: "2px 7px",
+            borderRadius: 100,
+            background: "rgba(245,158,11,0.1)",
+            color: "#f59e0b",
+            letterSpacing: "0.05em",
+          }}
+        >
+          v1.0
+        </span>
+      </div>
     </motion.div>
   );
 }
