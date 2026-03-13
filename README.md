@@ -1,207 +1,271 @@
-# 🧠 WebMentor — Learn Smarter on Any Webpage
+# WebMentor
 
-Transform any webpage into your personal learning assistant — powered by **Chrome’s Built-in AI**.
+> On-device AI assistant for the web. Select any text, instantly summarize, translate, simplify, proofread, or rewrite it — entirely in your browser, no cloud, no API keys, no data leaving your machine.
 
----
+<br/>
 
-## 🚀 Overview
+## What it does
 
-**WebMentor** is a Chrome extension that turns any webpage into an interactive learning guide.  
-Whether you’re reading an article, research paper, or blog post — WebMentor helps you **summarize, simplify, translate, rewrite, and proofread** content instantly, **without leaving the page**.
+WebMentor adds a floating AI toolbar to every webpage. Select any text and five actions become available instantly:
 
-Designed for **students, non-native readers, and lifelong learners**, it makes the web easier to understand and more accessible — all with **on-device AI**, ensuring speed, privacy, and offline use.
+| Action        | What it does                                                                  |
+| ------------- | ----------------------------------------------------------------------------- |
+| **Summarize** | Condenses long content into clear key points                                  |
+| **Simplify**  | Rewrites complex text for kids, students, professionals, or a custom audience |
+| **Translate** | Converts text between 11 languages with auto language detection               |
+| **Proofread** | Fixes grammar, spelling, and style errors                                     |
+| **Rewrite**   | Improves clarity and flow while preserving meaning                            |
 
----
+All processing happens locally using **Gemini Nano** and Chrome's built-in AI APIs. No data is sent to any server.
 
-## ✨ Features
+<br/>
 
-| Feature                     | Description                                                                              |
-| --------------------------- | ---------------------------------------------------------------------------------------- |
-| 🪄 **Summarize**            | Get concise summaries of any webpage instantly.                                          |
-| 🧩 **Simplify (4 modes)**   | Rephrase complex text for **Kids**, **Students**, **Professionals**, or **Custom** tone. |
-| 🌍 **Translate**            | Translate content between multiple languages — instantly.                                |
-| ✍️ **Proofread**            | Fix grammar and improve clarity with one click.                                          |
-| 🔁 **Rewrite**              | Customize the tone or structure for clarity or creativity.                               |
-| 🔊 **Read Aloud**           | Let Chrome read the page to you — with pause, resume, and speed control.                 |
-| 💡 **Floating Action Menu** | Highlight any text and interact with AI right on the page.                               |
+## Built with
 
----
+- **Chrome Built-in AI** — Summarizer API, Translator API, Language Detector API, Rewriter API, Proofreader API, Prompt API (Gemini Nano)
+- **React 19** — UI components
+- **Framer Motion** — animations
+- **Vite** — build tooling
+- **Tailwind CSS** — utility styling
 
-## 🛠️ Tech Stack
+<br/>
 
-- **Frontend:** React + Vite
-- **UI:** Tailwind CSS, Framer Motion, Lucide Icons
-- **Platform:** Chrome Extension (Manifest V3)
-- **APIs:** Chrome Built-in AI (Summarizer, Translator, Proofreader, Prompt API, Rewriter, Language Detector)
+## Requirements
 
----
+- Chrome 138 or newer
+- Windows 10/11, macOS 13+, or Linux
+- 22GB+ free disk space (for Gemini Nano model)
+- 4GB+ VRAM GPU **or** 16GB RAM with 4+ CPU cores
 
-## ⚙️ How It Works
+<br/>
 
-1. **Load** the extension in developer mode.
-2. **Highlight** any text on a webpage.
-3. **Open** the floating menu → choose an action (Summarize, Simplify, Translate, etc).
-4. **View results instantly** — processed by Chrome’s local AI models.
-5. **Use the popup interface** for advanced actions.
+## Getting started
 
-All processing happens **locally** for privacy and offline accessibility.
-
----
-
-### ⚙️ Installation & Setup
-
-Before running WebMentor, make sure Chrome’s built-in AI environment is properly set up.  
-Follow these steps carefully to ensure everything works as intended.
-
----
+### 1. Clone the repo
 
 ```bash
-# Clone the repository
-git clone https://github.com/dlawiz83/Webmentor.git
-cd frontend
-
+git clone https://github.com/yourusername/webmentor-extension.git
+cd webmentor-extension/frontend
 ```
 
-### 🧩 1. Prerequisites
+### 2. Install dependencies
 
-- ✅ Use the **latest version of Google Chrome** or Dev build, Canary (up-to-date).
-- ✅ Go to `chrome://components` and confirm that **Optimization Guide On-Device Model** is installed and updated.
-  - If you don’t see it, click **“Check for update”** to install it.
+```bash
+npm install
+```
 
----
+### 3. Configure origin trial tokens
 
-### 🪄 2. Enable Required Chrome Flags
-
-Enable the following flags in your Chrome browser:
-
-- **Optimization Guide On-Device**  
-  Go to: `chrome://flags/#optimization-guide-on-device`  
-  → Set to **Enabled**  
-  → Click **Relaunch**
-
-- **Rewriter API for Gemini Nano**  
-  Go to: `chrome://flags/#rewriter-api-for-gemini-nano`  
-  → Set to **Enabled**  
-  → Click **Relaunch**
-
-- **Proofreader API for Gemini Nano**  
-  Go to: `chrome://flags/#proofreader-api-for-gemini-nano`  
-  → Set to **Enabled**  
-  → Click **Relaunch**
-
----
-
-### ✏️ 3. Register for API Access (Origin Trials)
-
-Some APIs (like **Rewriter** and **Proofreader**) require registration in Chrome’s Origin Trials.
-
-1. Visit the **Rewriter API Origin Trial** page.
-
-   - Click **Register** and fill out the form.
-   - In the _Web Origin_ field, provide your extension ID in this format:
-     ```
-     chrome-extension://YOUR_EXTENSION_ID
-     ```
-   - Submit the form and copy the **token** you receive.
-
-2. Do the same for the **Proofreader API Origin Trial**.
-   - Register and use the same `chrome-extension://YOUR_EXTENSION_ID`.
-   - Copy the provided token.
-
----
-
-### 🔑 4. Add Tokens to Environment File
-
-Create a `.env` file in the root of your project and add the following lines:
+Create a `.env` file in the `frontend/` directory:
 
 ```env
-VITE_REWRITE_TOKEN=your_rewriter_api_token_here
-VITE_CHROME_AI_TOKEN=your_proofreader_api_token_here
-
+VITE_CHROME_AI_TOKEN=your_proofreader_origin_trial_token
+VITE_REWRITE_TOKEN=your_rewriter_origin_trial_token
 ```
 
-Save the file.
-These tokens authorize your extension to access the experimental Chrome APIs locally.
+Get your tokens from the [Chrome Origin Trials dashboard](https://developer.chrome.com/origintrials/).
 
-### 5. Build the extension
+### 4. Build
 
 ```bash
-
-npm install
 npm run build
-
 ```
 
-Then:
+### 5. Load in Chrome
 
-1. Open `chrome://extensions/`
-2. Enable **Developer Mode**
-3. Click **Load unpacked** → select the `/dist` folder
-4. You’ll see the “ WebMentor” icon appear in your Chrome toolbar
+1. Go to `chrome://extensions`
+2. Enable **Developer mode** (top right)
+3. Click **Load unpacked**
+4. Select the `frontend/dist` folder
 
-### 6. Model Download
+<br/>
 
-When you trigger one of WebMentor’s AI actions (e.g., Summarize, Proofread, or Simplify),
-Chrome will automatically begin downloading the required on-device model.
+## Development
 
-You can view live download logs in the Console (Developer Tools).
-Once downloaded, all processing will run locally and offline.
+For live rebuilds during development:
+
+```bash
+npm run watch
+```
+
+After each rebuild, click the refresh icon on the extension card in `chrome://extensions`, then refresh any open tabs.
+
+<br/>
+
+## Project structure
+
+```
+frontend/
+├── public/
+│   ├── background.js          # Service worker — all AI API calls run here
+│   ├── manifest.json          # Extension manifest (MV3)
+│   └── icons/
+├── src/
+│   ├── components/
+│   │   ├── FloatingActionMenu.jsx   # Floating pill toolbar on text selection
+│   │   └── MiniWindow.jsx           # Full result modal with audio playback
+│   ├── Popup.jsx              # Extension popup UI
+│   ├── content-script.jsx     # Injected into every page, handles selection
+│   └── content.css            # Scoped styles for injected UI
+├── .env                       # Origin trial tokens (not committed)
+└── vite.config.js
+```
+
+<br/>
+
+## How it works
+
+### User flow
+
+```mermaid
+flowchart TD
+    A([User selects text on webpage]) --> B[FloatingActionMenu appears]
+    B --> C{User picks action}
+    C --> D[Summarize]
+    C --> E[Simplify]
+    C --> F[Translate]
+    C --> G[Proofread]
+    C --> H[Rewrite]
+    D & E & F & G & H --> I[MiniWindow shows loading state]
+    I --> J[content-script sends message to background.js]
+    J --> K[background.js calls Chrome Built-in AI]
+    K --> L[Gemini Nano processes on-device]
+    L --> M[Result returned to content-script]
+    M --> N([MiniWindow renders result])
+```
+
+### Architecture
+
+```mermaid
+flowchart LR
+    subgraph Page["Webpage context"]
+        CS[content-script.jsx]
+        FAM[FloatingActionMenu]
+        MW[MiniWindow]
+        CS --> FAM
+        CS --> MW
+    end
+
+    subgraph Extension["Extension context"]
+        BG[background.js\nService Worker]
+        POP[Popup.jsx]
+    end
+
+    subgraph AI["Chrome Built-in AI — on device"]
+        SUM[Summarizer API]
+        PRF[Proofreader API]
+        RW[Rewriter API]
+        TR[Translator API]
+        LD[Language Detector API]
+        LM[Prompt API\nGemini Nano]
+    end
+
+    CS -- "chrome.runtime.sendMessage" --> BG
+    BG --> SUM & PRF & RW & TR & LD & LM
+    POP --> SUM & PRF & RW & TR & LD & LM
+```
+
+### Session caching
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant CS as content-script
+    participant BG as background.js
+    participant AI as Gemini Nano
+
+    U->>CS: Selects text, clicks Summarize
+    CS->>BG: runSummarizer message
+    BG->>AI: Summarizer.create() (first time — slow)
+    AI-->>BG: Session ready
+    BG->>AI: summarize(text)
+    AI-->>BG: Result
+    BG-->>CS: { result }
+    CS-->>U: MiniWindow shows result
+
+    U->>CS: Selects new text, clicks Summarize
+    CS->>BG: runSummarizer message
+    Note over BG: Cache hit — reuses session
+    BG->>AI: summarize(text)
+    AI-->>BG: Result
+    BG-->>CS: { result }
+    CS-->>U: MiniWindow shows result (fast)
+```
+
+The background service worker handles all AI calls because Chrome's built-in AI APIs are not available in content scripts. Sessions are cached per action so subsequent calls skip model initialization entirely.
+
+<br/>
+
+## Supported languages (Translator)
+
+English · Spanish · French · German · Chinese · Japanese · Korean · Arabic · Hindi · Russian · Portuguese
+
+> Some language pairs (Arabic, Hindi, Russian) require the language pack to be installed via `chrome://on-device-translation-internals`.
+
+<br/>
+
+## Privacy
+
+- **No data leaves your device.** All AI processing runs locally via Gemini Nano.
+- **No analytics, no tracking, no accounts.**
+- **No external API keys.** The extension uses Chrome's built-in models only.
+- Origin trial tokens are scoped to this extension's ID and cannot be used elsewhere.
+
+<br/>
+
+## Browser support
+
+| Browser      | Support                           |
+| ------------ | --------------------------------- |
+| Chrome 138+  | ✅ Full support                   |
+| Chrome < 138 | ❌ Built-in AI APIs not available |
+| Firefox      | ❌ Not supported                  |
+| Safari       | ❌ Not supported                  |
+| Edge         | ⚠️ Untested                       |
+
+<br/>
+
+## Known limitations
+
+- First run of each AI action may take 5–15 seconds while Gemini Nano loads into memory
+- Chrome may unload the model from memory after extended idle periods
+- Proofreader and Rewriter require origin trial tokens (in active trial as of 2025)
+- Translate requires Chrome's language packs for some language pairs
+
+<br/>
+
+## Roadmap
+
+- [ ] Streaming output for faster perceived response
+- [ ] History of past actions per session
+- [ ] Custom simplification presets
+- [ ] Right-click context menu integration
+- [ ] Export results to clipboard with formatting
+
+<br/>
+
+## Contributing
+
+Pull requests are welcome. For major changes please open an issue first.
+
+```bash
+# Run linting
+npm run lint
+
+# Build for production
+npm run build
+```
+
+<br/>
+
+## License
+
+MIT © 2025 — built with Chrome's on-device AI
+
+<br/>
 
 ---
 
-## 🌐 Use Cases
-
-- 🧑‍🎓 **Students** — Simplify lessons, summarize research papers, translate resources
-- 🧑‍🏫 **Teachers** — Generate accessible summaries for multilingual classrooms
-- 📰 **Readers** — Understand complex topics or read foreign content easily
-- 👩‍💻 **Professionals** — Proofread and polish writing before publishing
-
----
-
-## 🔒 Privacy First
-
-WebMentor is **100% local** — it runs on Chrome’s built-in AI APIs, meaning:  
-✅ No external servers  
-✅ No data tracking  
-✅ No internet dependency  
-✅ Instant response times
-
----
-
-## 💭 The Problem
-
-Millions of students, readers, and professionals struggle to understand complex online content — whether due to language barriers, difficult vocabulary, or long, information-dense pages.
-Switching between multiple tabs to translate, summarize, or simplify text interrupts learning flow and wastes time.
-
-## 🚀 The Solution — WebMentor
-
-WebMentor transforms any webpage into a personal learning coach.
-By integrating directly into Chrome, it allows users to summarize, simplify, translate, proofread, and rewrite any content on the page itself, without leaving it — powered entirely by on-device AI models for privacy and speed.
-
----
-
-## 🧠 Future Enhancements
-
-- Add **speech-to-text** accessibility (voice input)
-- Expand to **Firefox & Edge**
-- Support **on-page learning mode** (interactive explanations & quiz hints)
-
----
-
-## 🏆 Built For
-
-**Google Chrome Built-in AI Challenge 2025**  
-Empowering learning accessibility for the next billion users.
-
----
-
-## 👩‍💻 Team
-
-**Ayesha Dawodi** — Developer & Designer  
-
-
----
-
-## 💬 One-liner Pitch
-
-> **WebMentor** turns any webpage into your personal learning coach, summarize, simplify, translate, and proofread instantly with Chrome’s built-in AI.
+<p align="center">
+  Built using <a href="https://developer.chrome.com/docs/ai/built-in">Chrome Built-in AI</a> · Powered by Gemini Nano · Runs entirely on your device
+</p>
