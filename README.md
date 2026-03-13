@@ -4,6 +4,8 @@
 
 <br/>
 
+> 📺 [Watch the demo](https://youtu.be/7xNK17WWyvc)
+
 ## What it does
 
 WebMentor adds a floating AI toolbar to every webpage. Select any text and five actions become available instantly:
