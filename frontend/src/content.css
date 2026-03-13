@@ -1,41 +1,45 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap");
-@tailwind base;
+
 @tailwind components;
 @tailwind utilities;
-/* WebMentor — dark prose styles for MiniWindow result content */
+
+/* Reset — prevent leaking into host page */
+#webmentor-floating-root,
+#webmentor-mini-window {
+  all: initial;
+  font-family: "DM Sans", system-ui, sans-serif;
+}
 
 /* Prose inside the result panel */
-.wm-prose p {
+#webmentor-mini-window .wm-prose p {
   margin: 0 0 10px 0;
   color: #d4d0c8;
 }
-.wm-prose p:last-child {
+#webmentor-mini-window .wm-prose p:last-child {
   margin-bottom: 0;
 }
-
-.wm-prose ul,
-.wm-prose ol {
+#webmentor-mini-window .wm-prose ul,
+#webmentor-mini-window .wm-prose ol {
   margin: 8px 0 12px 0;
   padding-left: 20px;
 }
-.wm-prose li {
+#webmentor-mini-window .wm-prose li {
   margin-bottom: 5px;
   color: #c9c5bc;
   line-height: 1.65;
 }
-.wm-prose li::marker {
+#webmentor-mini-window .wm-prose li::marker {
   color: rgba(255, 255, 255, 0.2);
 }
-
-.wm-prose strong {
+#webmentor-mini-window .wm-prose strong {
   color: #fff;
   font-weight: 600;
 }
-.wm-prose em {
+#webmentor-mini-window .wm-prose em {
   color: rgba(255, 255, 255, 0.6);
   font-style: italic;
 }
-.wm-prose code {
+#webmentor-mini-window .wm-prose code {
   font-family: "DM Mono", monospace;
   font-size: 12px;
   background: rgba(255, 255, 255, 0.06);
@@ -44,32 +48,32 @@
   padding: 1px 5px;
   color: #fbbf24;
 }
-.wm-prose blockquote {
+#webmentor-mini-window .wm-prose blockquote {
   border-left: 2px solid rgba(255, 255, 255, 0.12);
   padding-left: 14px;
   margin: 10px 0;
   color: rgba(255, 255, 255, 0.4);
   font-style: italic;
 }
-.wm-prose h1,
-.wm-prose h2,
-.wm-prose h3 {
+#webmentor-mini-window .wm-prose h1,
+#webmentor-mini-window .wm-prose h2,
+#webmentor-mini-window .wm-prose h3 {
   color: #fff;
   font-weight: 600;
   margin: 14px 0 8px;
   letter-spacing: -0.01em;
 }
-.wm-prose h1 {
+#webmentor-mini-window .wm-prose h1 {
   font-size: 16px;
 }
-.wm-prose h2 {
+#webmentor-mini-window .wm-prose h2 {
   font-size: 14px;
 }
-.wm-prose h3 {
+#webmentor-mini-window .wm-prose h3 {
   font-size: 13px;
 }
 
-/* Spinner keyframes (used in Popup.jsx for loading icon) */
+/* Spinner */
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -90,17 +94,17 @@
   }
 }
 
-/* Scrollbar — thin, dark */
-::-webkit-scrollbar {
+/* Scrollbar — scoped to WebMentor containers only */
+#webmentor-mini-window ::-webkit-scrollbar {
   width: 4px;
 }
-::-webkit-scrollbar-track {
+#webmentor-mini-window ::-webkit-scrollbar-track {
   background: transparent;
 }
-::-webkit-scrollbar-thumb {
+#webmentor-mini-window ::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 100px;
 }
-::-webkit-scrollbar-thumb:hover {
+#webmentor-mini-window ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.18);
 }
