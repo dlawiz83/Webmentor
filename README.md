@@ -1,6 +1,6 @@
 # WebMentor
 
-> On-device AI assistant for the web. Select any text, instantly summarize, translate, simplify, proofread, or rewrite it — entirely in your browser, no cloud, no API keys, no data leaving your machine.
+> On-device AI assistant for the web. Select any text, instantly summarize, translate, simplify, proofread, or rewrite it, entirely in your browser, no cloud, no API keys, no data leaving your machine.
 
 <br/>
 
@@ -44,7 +44,7 @@ All processing happens locally using **Gemini Nano** and Chrome's built-in AI AP
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/yourusername/webmentor-extension.git
+git clone https://github.com/dlawiz83/webmentor-extension.git
 cd webmentor-extension/frontend
 ```
 
@@ -198,9 +198,7 @@ The background service worker handles all AI calls because Chrome's built-in AI 
 
 ## Supported languages (Translator)
 
-English · Spanish · French · German · Chinese · Japanese · Korean · Arabic · Hindi · Russian · Portuguese
-
-> Some language pairs (Arabic, Hindi, Russian) require the language pack to be installed via `chrome://on-device-translation-internals`.
+> Some language pairs require the language pack to be installed via `chrome://on-device-translation-internals`.
 
 <br/>
 
